@@ -17,3 +17,21 @@ This project used php with Laravel 11, see below instructions to replicate a loc
     ```
     composer global require laravel/installer
     ```
+
+
+
+## Setup Local Environment
+
+1. Create ```.env``` file in the project directory if not already
+2. Find ```.env.example``` in the project directory
+3. Find copy the content over to your ```.env``` file
+4. Find this section in ```.env``` file
+    ```
+    DB_CONNECTION=pgsql
+    DB_HOST=127.0.0.1
+    DB_PORT=5432
+    DB_DATABASE=vote_vault_api
+    DB_USERNAME=root
+    DB_PASSWORD=
+    ```
+5. Change these variables to match your local database
