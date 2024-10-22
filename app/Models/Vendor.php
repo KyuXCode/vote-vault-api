@@ -10,10 +10,10 @@ class Vendor extends Model
 {
     use HasFactory;
 
-//    public function certifications(): HasMany
-//    {
-//        return $this->hasMany(Certification::class);
-//    }
+    public function certifications(): HasMany
+    {
+        return $this->hasMany(Certification::class);
+    }
 
-    protected $guarded = [];
+    protected $guarded = ['id', 'created_at', 'updated_at'];
 }
