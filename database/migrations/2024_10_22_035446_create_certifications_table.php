@@ -24,7 +24,7 @@ return new class extends Migration
             $table->enum('action', ['Approved', 'Pending', 'Denied', 'Other']);
             $table->enum('system_type', ['VS', 'EPB']);
             $table->enum('system_base', ['DRE', 'OpScan', 'PC/Laptop', 'Tablet', 'Custom Hardware', 'Other']);
-            $table->foreignId('vendor_id')->constrained()->onDelete('cascade');
+            $table->foreignId('vendor_id')->constrained('vendors')->onDelete('cascade');
             $table->timestamps();
         });
     }
