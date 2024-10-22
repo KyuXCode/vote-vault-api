@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\CertificationController;
+use App\Http\Controllers\Api\ComponentController;
 use App\Http\Controllers\Api\VendorController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -27,3 +28,13 @@ Route::post('/certifications', [CertificationController::class, 'createCertifica
 Route::post('/certifications/{id}', [CertificationController::class, 'updateCertification']);
 
 Route::delete('/certifications/{id}', [CertificationController::class, 'deleteCertification']);
+
+
+//Component
+Route::get('/components', [ComponentController::class, 'getComponents']);
+Route::get('/components/{id}', [ComponentController::class, 'getComponent']);
+
+Route::post('/components', [ComponentController::class, 'createComponent']);
+Route::post('/components/{id}', [ComponentController::class, 'updateComponent']);
+
+Route::delete('/components/{id}', [ComponentController::class, 'deleteComponent']);
