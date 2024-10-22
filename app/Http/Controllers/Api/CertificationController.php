@@ -4,13 +4,14 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Certification;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 
 class CertificationController extends Controller
 {
-    public function getCertifications()
+    public function getCertifications(): Collection
     {
-        return Certification::orderBy('id')->get();
+        return Certification::with('components')->orderBy('id')->get();
     }
 
     public function createCertification(Request $request)
