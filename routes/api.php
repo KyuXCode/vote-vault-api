@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\CertificationController;
 use App\Http\Controllers\Api\ComponentController;
+use App\Http\Controllers\Api\CountyController;
 use App\Http\Controllers\Api\VendorController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -38,3 +39,12 @@ Route::post('/components', [ComponentController::class, 'createComponent']);
 Route::post('/components/{id}', [ComponentController::class, 'updateComponent']);
 
 Route::delete('/components/{id}', [ComponentController::class, 'deleteComponent']);
+
+//County
+Route::get('/counties', [CountyController::class, 'getCounties']);
+Route::get('/counties/{id}', [CountyController::class, 'getCounty']);
+
+Route::post('/counties', [CountyController::class, 'createCounty']);
+Route::post('/counties/{id}', [CountyController::class, 'updateCounty']);
+
+Route::delete('/counties/{id}', [CountyController::class, 'deleteCounty']);
