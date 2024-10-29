@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\CertificationController;
 use App\Http\Controllers\Api\ComponentController;
 use App\Http\Controllers\Api\ContractController;
 use App\Http\Controllers\Api\CountyController;
+use App\Http\Controllers\Api\ExpenseController;
 use App\Http\Controllers\Api\VendorController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -58,3 +59,4 @@ Route::get('/contracts/{id}', [ContractController::class, 'getContract']);
 Route::put('/contracts/{id}', [ContractController::class, 'updateContract']);
 Route::delete('/contracts/{id}', [ContractController::class, 'deleteContract']);
 
+Route::resource('expenses', ExpenseController::class);

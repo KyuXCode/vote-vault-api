@@ -11,7 +11,7 @@ class ContractController extends Controller
 {
     public function getContracts(): Collection
     {
-        return Contract::with('certification')->orderBy('id')->get();
+        return Contract::with('expenses')->orderBy('id')->get();
     }
 
     public function createContract(Request $request)
