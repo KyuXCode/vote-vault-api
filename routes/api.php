@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\CertificationController;
 use App\Http\Controllers\Api\ComponentController;
+use App\Http\Controllers\Api\ContractController;
 use App\Http\Controllers\Api\CountyController;
 use App\Http\Controllers\Api\VendorController;
 use Illuminate\Http\Request;
@@ -48,3 +49,12 @@ Route::post('/counties', [CountyController::class, 'createCounty']);
 Route::post('/counties/{id}', [CountyController::class, 'updateCounty']);
 
 Route::delete('/counties/{id}', [CountyController::class, 'deleteCounty']);
+
+
+//Contract
+Route::get('/contracts', [ContractController::class, 'getContracts']);
+Route::post('/contracts', [ContractController::class, 'createContract']);
+Route::get('/contracts/{id}', [ContractController::class, 'getContract']);
+Route::put('/contracts/{id}', [ContractController::class, 'updateContract']);
+Route::delete('/contracts/{id}', [ContractController::class, 'deleteContract']);
+
