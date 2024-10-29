@@ -36,7 +36,7 @@ class CertificationController extends Controller
 
     public function getCertification(string $id)
     {
-        return Certification::findOrFail($id);
+        return Certification::with('components')->findOrFail($id);
     }
 
     public function updateCertification(Request $request, string $id)
