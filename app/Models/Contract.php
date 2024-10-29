@@ -20,6 +20,5 @@ class Contract extends Model
     {
         return $this->hasMany(Expense::class);
     }
-
     protected $guarded = [];
 }

@@ -5,45 +5,48 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\County;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class CountyController extends Controller
 {
-    public function getCounties()
+    public function index()
     {
-        return County::orderBy('id')->get();
+        return response()->json(County::orderBy('id')->get());
     }
 
-    public function createCounty(Request $request)
+    public function store(Request $request)
     {
         $data = $request->validate([
             'name' => ['required', 'string', 'min:1', 'max:255', 'unique:counties,name'],
         ]);
 
-        if ($data) {
-            return County::create($data);
-        } else {
-            return response()->json(['message' => 'Error Creating'], 404);
-        }
+        $county = County::create($data);
+        return response()->json($county, 201);
     }
 
-    public function getCounty(string $id)
+    public function show(string $id)
     {
-        return County::findOrFail($id);
+        $county = County::findOrFail($id);
+        return response()->json($county);
     }
 
-    public function updateCounty(Request $request, string $id)
+    public function update(Request $request, string $id)
     {
-        $request->validate([
-            'name' => ['sometimes', 'string', 'min:1', 'max:255', 'unique:counties,name'],
+        $data = $request->validate([
+            'name' => ['sometimes', 'string', 'min:1', 'max:255', 'unique:counties,name,' . $id],
         ]);
 
-        $vendor = County::findOrFail($id);
-        return $vendor->update($request->all());
+        $county = County::findOrFail($id);
+        $county->update($data);
+
+        return response()->json($county);
     }
 
-    public function deleteCounty(string $id)
+    public function destroy(string $id)
     {
-        $vendor = County::findOrFail($id);
-        return $vendor->delete();
+        $county = County::findOrFail($id);
+        $county->delete();
+
+        return response()->json(['message' => 'County deleted successfully']);
     }
 }

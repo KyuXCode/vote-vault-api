@@ -6,15 +6,17 @@ use App\Http\Controllers\Controller;
 use App\Models\Contract;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class ContractController extends Controller
 {
-    public function getContracts(): Collection
+    public function index()
     {
-        return Contract::with('expenses')->orderBy('id')->get();
+        $contracts = Contract::with('expenses')->orderBy('id')->get();
+        return response()->json($contracts);
     }
 
-    public function createContract(Request $request)
+    public function store(Request $request)
     {
         $data = $request->validate([
             'begin_date' => ['required', 'date'],
@@ -23,15 +25,17 @@ class ContractController extends Controller
             'certification_id' => ['required', 'integer', 'exists:certifications,id'],
         ]);
 
-        return Contract::create($data);
+        $contract = Contract::create($data);
+        return response()->json($contract, 201);
     }
 
-    public function getContract(string $id)
+    public function show(string $id)
     {
-        return Contract::with('certification')->findOrFail($id);
+        $contract = Contract::with('certification')->findOrFail($id);
+        return response()->json($contract);
     }
 
-    public function updateContract(Request $request, string $id)
+    public function update(Request $request, string $id)
     {
         $data = $request->validate([
             'begin_date' => ['sometimes', 'date'],
@@ -43,12 +47,14 @@ class ContractController extends Controller
         $contract = Contract::findOrFail($id);
         $contract->update($data);
 
-        return $contract;
+        return response()->json($contract);
     }
 
-    public function deleteContract(string $id)
+    public function destroy(string $id)
     {
         $contract = Contract::findOrFail($id);
-        return $contract->delete();
+        $contract->delete();
+
+        return response()->json(['message' => 'Contract deleted successfully']);
     }
 }

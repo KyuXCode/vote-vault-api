@@ -8,12 +8,13 @@ use Illuminate\Http\Request;
 
 class VendorController extends Controller
 {
-    public function getVendors()
+    public function index()
     {
-        return Vendor::orderBy('id')->get();
+        $vendors = Vendor::orderBy('id')->get();
+        return response()->json($vendors);
     }
 
-    public function createVendor(Request $request)
+    public function store(Request $request)
     {
         $data = $request->validate([
             'name' => ['required', 'string', 'min:1', 'max:255', 'unique:vendors,name'],
@@ -25,25 +26,22 @@ class VendorController extends Controller
             'contact_email' => ['nullable', 'string', 'email', 'max:255'],
             'contact_phone' => ['nullable', 'string', 'max:20'],
             'product' => ['required', 'in:EPB,VS,EPB & VS,Service,Other']
-
         ]);
 
-        if ($data) {
-            return Vendor::create($data);
-        } else {
-            return response()->json(['message' => 'Error Creating'], 404);
-        }
+        $vendor = Vendor::create($data);
+        return response()->json($vendor, 201);
     }
 
-    public function getVendor(string $id)
+    public function show(string $id)
     {
-        return Vendor::findOrFail($id);
+        $vendor = Vendor::findOrFail($id);
+        return response()->json($vendor);
     }
 
-    public function updateVendor(Request $request, string $id)
+    public function update(Request $request, string $id)
     {
-        $request->validate([
-            'name' => ['sometimes', 'string', 'min:1', 'max:255', 'unique:vendors,name'],
+        $data = $request->validate([
+            'name' => ['sometimes', 'string', 'min:1', 'max:255', 'unique:vendors,name,' . $id],
             'address' => ['nullable', 'string', 'max:255'],
             'city' => ['nullable', 'string', 'max:255'],
             'state' => ['nullable', 'string', 'min:2', 'max:2'],
@@ -55,13 +53,16 @@ class VendorController extends Controller
         ]);
 
         $vendor = Vendor::findOrFail($id);
-        return $vendor->update($request->all());
+        $vendor->update($data);
+
+        return response()->json($vendor);
     }
 
-    public function deleteVendor(string $id)
+    public function destroy(string $id)
     {
         $vendor = Vendor::findOrFail($id);
-        return $vendor->delete();
+        $vendor->delete();
+
+        return response()->json(['message' => 'Vendor deleted successfully']);
     }
 }
-

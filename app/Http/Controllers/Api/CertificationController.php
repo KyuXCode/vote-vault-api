@@ -4,20 +4,21 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Certification;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class CertificationController extends Controller
 {
-    public function getCertifications(): Collection
+    public function index()
     {
-        return Certification::with('components')->orderBy('id')->get();
+        $certifications = Certification::with('components')->orderBy('id')->get();
+        return response()->json($certifications);
     }
 
-    public function createCertification(Request $request)
+    public function store(Request $request)
     {
         $data = $request->validate([
-            'model_number' => ['required', 'string','min:1', 'max:255'],
+            'model_number' => ['required', 'string', 'min:1', 'max:255'],
             'description' => ['required', 'string'],
             'application_date' => ['required', 'date'],
             'certification_date' => ['required', 'date'],
@@ -31,15 +32,17 @@ class CertificationController extends Controller
             'vendor_id' => ['required', 'exists:vendors,id'],
         ]);
 
-        return Certification::create($data);
+        $certification = Certification::create($data);
+        return response()->json($certification, Response::HTTP_CREATED);
     }
 
-    public function getCertification(string $id)
+    public function show(string $id)
     {
-        return Certification::with('components')->findOrFail($id);
+        $certification = Certification::with('components')->findOrFail($id);
+        return response()->json($certification);
     }
 
-    public function updateCertification(Request $request, string $id)
+    public function update(Request $request, string $id)
     {
         $data = $request->validate([
             'model_number' => ['sometimes', 'string', 'max:255'],
@@ -59,12 +62,14 @@ class CertificationController extends Controller
         $certification = Certification::findOrFail($id);
         $certification->update($data);
 
-        return $certification;
+        return response()->json($certification);
     }
 
-    public function deleteCertification(string $id)
+    public function destroy(string $id)
     {
         $certification = Certification::findOrFail($id);
-        return $certification->delete();
+        $certification->delete();
+
+        return response()->json(['message' => 'Certification deleted successfully'], Response::HTTP_NO_CONTENT);
     }
 }
