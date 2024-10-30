@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\CertificationController;
 use App\Http\Controllers\Api\ComponentController;
 use App\Http\Controllers\Api\ContractController;
 use App\Http\Controllers\Api\CountyController;
+use App\Http\Controllers\Api\DispositionController;
 use App\Http\Controllers\Api\ExpenseController;
 use App\Http\Controllers\Api\InventoryUnitController;
 use App\Http\Controllers\Api\VendorController;
@@ -27,3 +28,5 @@ Route::resource('contracts', ContractController::class);
 Route::resource('expenses', ExpenseController::class);
 
 Route::resource('inventory_units', InventoryUnitController::class);
+
+Route::resource('dispositions', DispositionController::class);

@@ -22,7 +22,7 @@ class ExpenseController extends Controller
             'fund' => ['required', 'string', 'max:255'],
             'owner' => ['required', 'string', 'max:255'],
             'contract_id' => ['required', 'exists:contracts,id'],
-            'county_id' => ['required', 'exists:counties,id'],
+            'county_id' => ['required', 'integer', 'exists:counties,id'],
         ]);
 
 
@@ -38,17 +38,16 @@ class ExpenseController extends Controller
 
     public function update(Request $request, $id)
     {
-        $expense = Expense::findOrFail($id);
-
         $data = $request->validate([
             'name' => ['sometimes', 'string', 'max:255'],
             'amount' => ['sometimes', 'numeric'],
             'fund' => ['sometimes', 'string', 'max:255'],
             'owner' => ['sometimes', 'string', 'max:255'],
             'contract_id' => ['sometimes', 'exists:contracts,id'],
-            'county_id' => ['sometimes', 'exists:counties,id'],
+            'county_id' => ['sometimes', 'integer', 'exists:counties,id'],
         ]);
 
+        $expense = Expense::findOrFail($id);
         $expense->update($data);
         return response()->json($expense);
     }
