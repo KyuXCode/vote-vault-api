@@ -17,8 +17,8 @@ return new class extends Migration
             $table->date('acquisition_date');
             $table->enum('condition', ['New', 'Excellent', 'Good', 'Worn', 'Damaged', 'Unusable']);
             $table->enum('usage', ['Active', 'Spare', 'Display', 'Other', 'Inactive']);
-            $table->foreignId('expense_id')->constrained()->onDelete('cascade');
-            $table->foreignId('component_id')->constrained()->onDelete('cascade');
+            $table->foreignId('expense_id')->constrained('expenses')->onDelete('cascade');
+            $table->foreignId('component_id')->constrained('components')->onDelete('cascade');
             $table->timestamps();
         });
     }
