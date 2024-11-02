@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\CountyController;
 use App\Http\Controllers\Api\DispositionController;
 use App\Http\Controllers\Api\ExpenseController;
 use App\Http\Controllers\Api\InventoryUnitController;
+use App\Http\Controllers\Api\StorageLocationController;
 use App\Http\Controllers\Api\VendorController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -30,3 +31,5 @@ Route::resource('expenses', ExpenseController::class);
 Route::resource('inventory_units', InventoryUnitController::class);
 
 Route::resource('dispositions', DispositionController::class);
+
+Route::resource('storage_locations', StorageLocationController::class);

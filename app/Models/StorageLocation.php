@@ -6,8 +6,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Disposition extends Model
+class StorageLocation extends Model
 {
-    use HasFactory;
+    Use HasFactory;
+    public function inventoryUnit(): HasMany
+    {
+        return $this->hasMany(InventoryUnit::class);
+    }
     protected $guarded = [];
 }
