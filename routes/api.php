@@ -35,4 +35,4 @@ Route::resource('dispositions', DispositionController::class);
 
 Route::resource('storage_locations', StorageLocationController::class);
 
-Route::get('/api/dashboard_data', [DashboardDataController::class, 'getDashboardData']);
+Route::get('/dashboard_data', [DashboardDataController::class, 'getDashboardData']);
