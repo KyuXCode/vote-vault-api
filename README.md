@@ -14,7 +14,7 @@ This project used php with Laravel 11 & PostgreSQL 16, see below instructions to
 - Open the Docker Desktop app before the next stage ![Docker Desktop Logo](./InstructionScreenshots/Docker_Desktop_logo.png)
 
 ## Start the Project Locally
-### 1. Start ```vote-vault-api```
+### Start ```vote-vault-api```
 Make sure you're in the ```vote-vault-api``` directory, start the docker container for the api
 ```
 docker compose up --build
