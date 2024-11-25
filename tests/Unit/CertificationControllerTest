@@ -20,7 +20,7 @@ class CertificationControllerTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function can_create_a_certification()
+    public function create_certification()
     {
         //This line creates a vendor record to attach to an id, to then attribute it to a certification record.
         $vendor = Vendor::factory()->create();
