@@ -64,10 +64,38 @@ class AuditController extends Controller
      */
     public function randomAudits(): JsonResponse
     {
+        $samplePercentage = 0.0001; // 0.01%
+
         $results = DB::table('inventory_units as iu')
             ->join('components as c', 'iu.component_id', '=', 'c.id')
-            ->get();
+            ->join('certifications as cert', 'c.certification_id', '=', 'cert.id')
+            ->join('contracts as con', 'cert.id', '=', 'con.certification_id')
+            ->join('counties as co', 'iu.expense_id', '=', 'co.id')
+            ->leftJoin('dispositions as d', 'iu.id', '=', 'd.inventory_unit_id')
+            ->whereNull('d.id')
+            ->whereDate('con.end_date', '>=', now())
+            ->whereIn('cert.system_type', ['VS', 'EPB'])
+            ->select(
+                'iu.id as inventory_id',
+                'iu.serial_number',
+                'iu.condition',
+                'iu.usage',
+                'c.name as component_name',
+                'co.name as county_name',
+                DB::raw('COUNT(iu.id) OVER (PARTITION BY c.name) as total_count'),
+                DB::raw('ROW_NUMBER() OVER (PARTITION BY c.name ORDER BY RANDOM()) as row_num')
+            )
+            ->get()
+            ->groupBy('component_name')
+            ->map(function ($group) use ($samplePercentage) {
+                $totalCount = $group->first()->total_count;
+                $sampleSize = max(1, (int)ceil($totalCount * $samplePercentage));
+                return $group->take($sampleSize);
+            })
+            ->flatten(1)
+            ->sortBy('county_name');
 
-        return response()->json($results);
+        return response()->json($results->values());
     }
+
 }
