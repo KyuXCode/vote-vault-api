@@ -21,5 +21,15 @@ class InventoryUnit extends Model
         return $this->belongsTo(StorageLocation::class);
     }
 
+    public function component(): BelongsTo
+    {
+        return $this->belongsTo(Component::class);
+    }
+
+    public function county(): BelongsTo
+    {
+        return $this->belongsTo(County::class);
+    }
+
     protected $guarded = [];
 }

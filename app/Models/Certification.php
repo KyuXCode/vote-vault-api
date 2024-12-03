@@ -19,6 +19,12 @@ class Certification extends Model
     {
         return $this->hasMany(Component::class);
     }
+
+    public function contract(): BelongsTo
+    {
+        return $this->belongsTo(Contract::class);
+    }
+
     //Fields that can't be assigned
     protected $guarded = [];
 }

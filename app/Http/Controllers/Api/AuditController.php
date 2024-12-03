@@ -41,21 +41,29 @@ class AuditController extends Controller
                 DB::raw('ROW_NUMBER() OVER (PARTITION BY co.id, cert.system_base ORDER BY RANDOM()) as row_num')
             )
             ->get()
-            ->groupBy(['county_name', 'system_base'])
-            ->map(function ($group) {
-                $sampleSize = (int)ceil($group->count() * 0.05);
-                return $group->take($sampleSize);
+            ->groupBy('county_name')
+            ->map(function ($group) use ($validSystemBases) {
+                // Sample 5% of each system base type for the county
+                $result = collect();
+                foreach ($validSystemBases as $base) {
+                    $systemBaseGroup = $group->where('system_base', $base);
+                    $sampleSize = (int)ceil($systemBaseGroup->count() * 0.05);
+                    $result = $result->merge($systemBaseGroup->take($sampleSize));
+                }
+                return $result;
             })
-            ->flatten(1)
-            ->map(function ($item) {
-                $item->temporary_guid = Str::uuid();
-                return $item;
+            ->mapWithKeys(function ($group, $county) {
+                return [$county => $group->map(function ($item) {
+                    $item->temporary_guid = Str::uuid();
+                    return $item;
+                })];
             })
+            ->collapse()
             ->sortBy('temporary_guid');
 
         return response()->json([
             'seed_number' => $seedNumber,
-            'results' => $results->values(),
+            'results' => $results,
         ]);
     }
 
@@ -64,6 +72,10 @@ class AuditController extends Controller
      */
     public function randomAudits(): JsonResponse
     {
+        $seedNumber = str_pad(random_int(1, 999999999), 9, '0', STR_PAD_LEFT) .
+            str_pad(random_int(1, 999999999), 9, '0', STR_PAD_LEFT) .
+            random_int(1, 99);
+
         $samplePercentage = 0.0001; // 0.01%
 
         $results = DB::table('inventory_units as iu')
@@ -95,7 +107,9 @@ class AuditController extends Controller
             ->flatten(1)
             ->sortBy('county_name');
 
-        return response()->json($results->values());
+        return response()->json([
+            'seed_number' => $seedNumber,
+            'results' => $results->values(),
+        ]);
     }
-
 }
