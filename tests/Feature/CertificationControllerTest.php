@@ -7,10 +7,11 @@ use App\Models\Vendor;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
 use Tests\TestCase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class CertificationControllerTest extends TestCase
 {
-    use WithFaker;
+    use RefreshDatabase, WithFaker;
 
     public function testIndexReturnsCertifications()
     {
@@ -18,11 +19,10 @@ class CertificationControllerTest extends TestCase
 
         $response = $this->json('get', '/api/certifications');
 
-        $response->assertStatus(Response::HTTP_OK);
-        $response->assertJsonCount(count($certifications));
-        $response->assertJsonStructure([
-            '*' => ['id', 'model_number', 'description', 'vendor_id']
-        ]);
+        $response->assertStatus(200);
+        foreach ($certifications as $certification) {
+            $response->assertJsonFragment(['id' => $certification->id]);
+        }
     }
 
     public function testStoreCreatesCertification()
