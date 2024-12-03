@@ -25,12 +25,12 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
 
         Vendor::factory()->count(50)->create();
-        Certification::factory()->count(10)->create();
-        Component::factory()->count(10)->create();
+        Certification::factory()->count(1000)->create();
+        Component::factory()->count(1000)->create();
         County::factory()->count(50)->create();
         Contract::factory()->count(50)->create();
         Expense::factory()->count(50)->create();
-        InventoryUnit::factory()->count(1000)->create();
+        InventoryUnit::factory()->count(1500)->create();
         Disposition::factory()->count(50)->create();
         StorageLocation::factory()->count(50)->create();
     }

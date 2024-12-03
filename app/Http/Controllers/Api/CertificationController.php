@@ -70,6 +70,6 @@ class CertificationController extends Controller
         $certification = Certification::findOrFail($id);
         $certification->delete();
 
-        return response()->json(['message' => 'Certification deleted successfully'], Response::HTTP_NO_CONTENT);
+        return response()->json(['message' => 'Certification deleted successfully'], Response::HTTP_OK);
     }
 }
