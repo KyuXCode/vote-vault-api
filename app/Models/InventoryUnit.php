@@ -11,9 +11,24 @@ class InventoryUnit extends Model
 {
     Use HasFactory;
 
-    public function dispositions(): HasMany
+    public function dispositions(): BelongsTo
     {
-        return $this->hasMany(Disposition::class);
+        return $this->belongsTo(Disposition::class);
+    }
+
+    public function storage_locations(): BelongsTo
+    {
+        return $this->belongsTo(StorageLocation::class);
+    }
+
+    public function component(): BelongsTo
+    {
+        return $this->belongsTo(Component::class);
+    }
+
+    public function county(): BelongsTo
+    {
+        return $this->belongsTo(County::class);
     }
 
     protected $guarded = [];

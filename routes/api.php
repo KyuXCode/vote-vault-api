@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AuditController;
 use App\Http\Controllers\Api\CertificationController;
 use App\Http\Controllers\Api\ComponentController;
 use App\Http\Controllers\Api\ContractController;
@@ -35,4 +36,8 @@ Route::resource('dispositions', DispositionController::class);
 
 Route::resource('storage_locations', StorageLocationController::class);
 
-Route::get('/dashboard_data', [DashboardDataController::class, 'getDashboardData']);
+Route::get('/dashboard_data', [DashboardDataController::class, 'getDashboardData'])->name('dashboard_data');
+
+Route::get('/audits/public_test', [AuditController::class, 'publicTests'])->name('audits.public_test');
+
+Route::get('/audits/random', [AuditController::class, 'randomAudits'])->name('audits.random');
