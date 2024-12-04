@@ -5,13 +5,14 @@ namespace Tests\Feature;
 use App\Models\Component;
 use App\Models\Expense;
 use App\Models\InventoryUnit;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 
 class InventoryUnitTest extends TestCase
 {
-    use WithFaker;
+    use WithFaker, RefreshDatabase;
 
     public function testIndexReturnsDataInValidFormat()
     {

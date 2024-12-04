@@ -24,7 +24,8 @@ class AuditController extends Controller
             ->join('components as c', 'iu.component_id', '=', 'c.id')
             ->join('certifications as cert', 'c.certification_id', '=', 'cert.id')
             ->join('contracts as con', 'cert.id', '=', 'con.certification_id')
-            ->join('counties as co', 'iu.expense_id', '=', 'co.id')
+            ->join('expenses as exp', 'exp.contract_id', '=', 'con.id')
+            ->join('counties as co', 'exp.county_id', '=', 'co.id')
             ->leftJoin('dispositions as d', 'iu.id', '=', 'd.inventory_unit_id')
             ->whereNull('d.id')
             ->where('iu.usage', '!=', 'Inactive')
@@ -43,23 +44,17 @@ class AuditController extends Controller
             ->get()
             ->groupBy('county_name')
             ->map(function ($group) use ($validSystemBases) {
-                // Sample 5% of each system base type for the county
                 $result = collect();
                 foreach ($validSystemBases as $base) {
                     $systemBaseGroup = $group->where('system_base', $base);
                     $sampleSize = (int)ceil($systemBaseGroup->count() * 0.05);
                     $result = $result->merge($systemBaseGroup->take($sampleSize));
                 }
-                return $result;
-            })
-            ->mapWithKeys(function ($group, $county) {
-                return [$county => $group->map(function ($item) {
+                return $result->map(function ($item) {
                     $item->temporary_guid = Str::uuid();
                     return $item;
-                })];
-            })
-            ->collapse()
-            ->sortBy('temporary_guid');
+                });
+            });
 
         return response()->json([
             'seed_number' => $seedNumber,
@@ -82,7 +77,8 @@ class AuditController extends Controller
             ->join('components as c', 'iu.component_id', '=', 'c.id')
             ->join('certifications as cert', 'c.certification_id', '=', 'cert.id')
             ->join('contracts as con', 'cert.id', '=', 'con.certification_id')
-            ->join('counties as co', 'iu.expense_id', '=', 'co.id')
+            ->join('expenses as exp', 'exp.contract_id', '=', 'con.id')
+            ->join('counties as co', 'exp.county_id', '=', 'co.id')
             ->leftJoin('dispositions as d', 'iu.id', '=', 'd.inventory_unit_id')
             ->whereNull('d.id')
             ->whereDate('con.end_date', '>=', now())

@@ -3,13 +3,14 @@
 namespace Tests\Feature;
 
 use App\Models\County;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 
 class CountyTest extends TestCase
 {
-    use WithFaker;
+    use WithFaker, RefreshDatabase;
 
     public function testIndexReturnsDataInValidFormat()
     {
