@@ -17,6 +17,8 @@ COPY . .
 
 RUN chown -R www-data:www-data /var/www/html
 
+RUN composer require brianium/paratest:^7.0 --dev
+
 RUN composer install
 
 EXPOSE 80
