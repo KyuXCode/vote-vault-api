@@ -14,9 +14,18 @@ class AuditController extends Controller
      */
     public function publicTests(): JsonResponse
     {
-        $seedNumber = str_pad(random_int(1, 999999999), 9, '0', STR_PAD_LEFT) .
-            str_pad(random_int(1, 999999999), 9, '0', STR_PAD_LEFT) .
-            random_int(1, 99);
+        $seedNumber = request('seed_number', null);
+
+        if (is_null($seedNumber)) {
+            $seedNumber = (int)(str_pad(random_int(1, 999999999), 9, '0', STR_PAD_LEFT) .
+                str_pad(random_int(1, 999999999), 9, '0', STR_PAD_LEFT) .
+                random_int(1, 99));
+        } else {
+            $seedNumber = (int)$seedNumber;
+        }
+
+        // Set PHP's random seed
+        mt_srand($seedNumber);
 
         $validSystemBases = ['BMD', 'OPSCAN', 'DRE', 'VVPAT'];
 
@@ -39,7 +48,7 @@ class AuditController extends Controller
                 'c.type as component_type',
                 'cert.system_base',
                 'co.name as county_name',
-                DB::raw('ROW_NUMBER() OVER (PARTITION BY co.id, cert.system_base ORDER BY RANDOM()) as row_num')
+                DB::raw("ROW_NUMBER() OVER (PARTITION BY co.id, cert.system_base ORDER BY RANDOM() * $seedNumber) as row_num")
             )
             ->get()
             ->groupBy('county_name')
@@ -50,10 +59,6 @@ class AuditController extends Controller
                     $sampleSize = (int)ceil($systemBaseGroup->count() * 0.05);
                     $result = $result->merge($systemBaseGroup->take($sampleSize));
                 }
-                return $result->map(function ($item) {
-                    $item->temporary_guid = Str::uuid();
-                    return $item;
-                });
             });
 
         return response()->json([
@@ -67,9 +72,18 @@ class AuditController extends Controller
      */
     public function randomAudits(): JsonResponse
     {
-        $seedNumber = str_pad(random_int(1, 999999999), 9, '0', STR_PAD_LEFT) .
-            str_pad(random_int(1, 999999999), 9, '0', STR_PAD_LEFT) .
-            random_int(1, 99);
+        $seedNumber = request('seed_number', null);
+
+        if (is_null($seedNumber)) {
+            $seedNumber = (int)(str_pad(random_int(1, 999999999), 9, '0', STR_PAD_LEFT) .
+                str_pad(random_int(1, 999999999), 9, '0', STR_PAD_LEFT) .
+                random_int(1, 99));
+        } else {
+            $seedNumber = (int)$seedNumber;
+        }
+
+        // Set PHP's random seed
+        mt_srand($seedNumber);
 
         $samplePercentage = 0.0001; // 0.01%
 
@@ -91,7 +105,7 @@ class AuditController extends Controller
                 'c.name as component_name',
                 'co.name as county_name',
                 DB::raw('COUNT(iu.id) OVER (PARTITION BY c.name) as total_count'),
-                DB::raw('ROW_NUMBER() OVER (PARTITION BY c.name ORDER BY RANDOM()) as row_num')
+                DB::raw("ROW_NUMBER() OVER (PARTITION BY c.name ORDER BY RANDOM() * $seedNumber) as row_num")
             )
             ->get()
             ->groupBy('component_name')
