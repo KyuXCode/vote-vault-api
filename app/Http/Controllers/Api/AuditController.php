@@ -59,6 +59,10 @@ class AuditController extends Controller
                     $sampleSize = (int)ceil($systemBaseGroup->count() * 0.05);
                     $result = $result->merge($systemBaseGroup->take($sampleSize));
                 }
+                return $result->map(function ($item) {
+                    $item->temporary_guid = Str::uuid();
+                    return $item;
+                });
             });
 
         return response()->json([
