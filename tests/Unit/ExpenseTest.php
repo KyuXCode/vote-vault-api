@@ -5,13 +5,14 @@ namespace Tests\Feature;
 use App\Models\Contract;
 use App\Models\County;
 use App\Models\Expense;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 
 class ExpenseTest extends TestCase
 {
-    use WithFaker;
+    use WithFaker, RefreshDatabase;
 
     public function testIndexReturnsDataInValidFormat()
     {

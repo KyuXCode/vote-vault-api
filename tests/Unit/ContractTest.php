@@ -4,13 +4,14 @@ namespace Tests\Feature;
 
 use App\Models\Certification;
 use App\Models\Contract;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 
 class ContractTest extends TestCase
 {
-    use WithFaker;
+    use WithFaker, RefreshDatabase;
 
     public function testIndexReturnsDataInValidFormat()
     {

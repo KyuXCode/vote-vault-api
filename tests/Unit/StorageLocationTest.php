@@ -4,13 +4,14 @@ namespace Tests\Feature;
 
 use App\Models\StorageLocation;
 use App\Models\InventoryUnit;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 
 class StorageLocationTest extends TestCase
 {
-    use WithFaker;
+    use WithFaker, RefreshDatabase;
 
     public function testIndexReturnsDataInValidFormat()
     {

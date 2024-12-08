@@ -14,7 +14,7 @@ use Tests\TestCase;
 
 class DashboardDataTest extends TestCase
 {
-    use WithFaker;
+    use WithFaker, RefreshDatabase;
 
     public function testDashboardData()
     {

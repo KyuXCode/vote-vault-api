@@ -14,7 +14,7 @@ use Tests\TestCase;
 
 class AuditTest extends TestCase
 {
-    use WithFaker;
+    use WithFaker, RefreshDatabase;
 
     public function test_audit_public_tests()
     {
@@ -36,15 +36,17 @@ class AuditTest extends TestCase
         $response->assertJsonStructure([
             'results' => [
                 '*' => [
-                    'inventory_id',
-                    'serial_number',
-                    'condition',
-                    'usage',
-                    'component_name',
-                    'component_type',
-                    'system_base',
-                    'county_name',
-                    'row_num'
+                    '*' => [
+                        'inventory_id',
+                        'serial_number',
+                        'condition',
+                        'usage',
+                        'component_name',
+                        'component_type',
+                        'system_base',
+                        'county_name',
+                        'row_num'
+                    ]
                 ]
             ]
         ]);
