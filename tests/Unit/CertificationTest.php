@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Unit;
 
 use App\Models\Certification;
 use App\Models\Vendor;
@@ -15,6 +15,13 @@ class CertificationTest extends TestCase
 
     public function testIndexReturnsDataInValidFormat()
     {
+        // Given
+
+        // When
+
+        // Then
+
+
         $this->json('get', 'api/certifications')
             ->assertStatus(Response::HTTP_OK)
             ->assertJsonStructure(

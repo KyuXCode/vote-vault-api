@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Helpers\ComponentType;
 use App\Models\Component;
 use App\Models\Certification;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -15,8 +16,19 @@ class ComponentFactory extends Factory
         return [
             'name' => $this->faker->word(),
             'description' => $this->faker->sentence(),
-            'type' => $this->faker->randomElement(['DRE', 'OpScan', 'BMD', 'VVPAT', 'COTS', 'Other', 'Hardware', 'Software', 'Peripheral']),
+            Component::type => $this->faker->randomElement(ComponentType::cases()),
             'certification_id' => Certification::query()->inRandomOrder()->value('id') ?? Certification::factory(),
         ];
+    }
+
+    public function withAllFields(array $attributes = []): self
+    {
+        return $this->state(fn() => array_merge([
+            'name' => 'name',
+            Component::type => ComponentType::BMD,
+            'certification_id' => Certification::query()->inRandomOrder()->value('id') ?? Certification::factory(),
+        ],
+            $attributes)
+        );
     }
 }
