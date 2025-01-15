@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Helpers\ContractType;
 use App\Models\Certification;
 use App\Models\Contract;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -18,8 +19,23 @@ class ContractFactory extends Factory
         return [
             'begin_date' => $beginDate,
             'end_date' => $endDate,
-            'type' => $this->faker->randomElement(['Purchase', 'Lease', 'Service', 'Other']),
+            Contract::type => $this->faker->randomElement(ContractType::cases()),
             'certification_id' => Certification::query()->inRandomOrder()->value('id') ?? Certification::factory(),
         ];
+    }
+
+    public function withAllFields(array $attributes = []): self
+    {
+        $beginDate = $this->faker->dateTimeBetween('-1 year', 'now');
+        $endDate = $this->faker->dateTimeBetween($beginDate, '+1 year');
+
+        return $this->state(fn() => array_merge([
+            'begin_date' => $beginDate,
+            'end_date' => $endDate,
+            Contract::type => ContractType::Purchase,
+            'certification_id' => Certification::query()->inRandomOrder()->value('id') ?? Certification::factory(),
+        ],
+            $attributes)
+        );
     }
 }

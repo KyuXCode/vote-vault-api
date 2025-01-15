@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\ContractType;
 use App\Http\Controllers\Controller;
 use App\Models\Contract;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Validation\Rules\Enum;
 
 class ContractController extends Controller
 {
@@ -21,7 +23,7 @@ class ContractController extends Controller
         $data = $request->validate([
             'begin_date' => ['required', 'date'],
             'end_date' => ['required', 'date', 'after:begin_date'],
-            'type' => ['required', 'string', 'in:Purchase,Lease,Service,Other'],
+            'type' => ['required', 'string', new Enum(ContractType::class)],
             'certification_id' => ['required', 'integer', 'exists:certifications,id'],
         ]);
 

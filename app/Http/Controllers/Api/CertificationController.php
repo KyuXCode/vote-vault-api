@@ -2,10 +2,15 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\Action;
+use App\Helpers\CertificationType;
+use App\Helpers\SystemBase;
+use App\Helpers\SystemType;
 use App\Http\Controllers\Controller;
 use App\Models\Certification;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Validation\Rules\Enum;
 
 class CertificationController extends Controller
 {
@@ -25,10 +30,10 @@ class CertificationController extends Controller
             'expiration_date' => ['required', 'date'],
             'federal_certification_number' => ['nullable', 'string', 'max:255'],
             'federal_certification_date' => ['nullable', 'date'],
-            'type' => ['required', 'in:Certification,Reevaluation,Renewal,Recertification,Other'],
-            'action' => ['required', 'in:Approved,Pending,Denied,Other'],
-            'system_type' => ['required', 'in:VS,EPB'],
-            'system_base' => ['required', 'in:DRE,OpScan,PC/Laptop,Tablet,Custom Hardware,Other'],
+            'type' => ['required', new Enum(CertificationType::class)],
+            'action' => ['required', new Enum(Action::class)],
+            'system_type' => ['required', new Enum(SystemType::class)],
+            'system_base' => ['required', new Enum(SystemBase::class)],
             'vendor_id' => ['required', 'exists:vendors,id'],
         ]);
 
@@ -52,10 +57,10 @@ class CertificationController extends Controller
             'expiration_date' => ['sometimes', 'date'],
             'federal_certification_number' => ['nullable', 'string', 'max:255'],
             'federal_certification_date' => ['nullable', 'date'],
-            'type' => ['sometimes', 'in:Certification,Reevaluation,Renewal,Recertification,Other'],
-            'action' => ['sometimes', 'in:Approved,Pending,Denied,Other'],
-            'system_type' => ['sometimes', 'in:VS,EPB'],
-            'system_base' => ['sometimes', 'in:DRE,OpScan,PC/Laptop,Tablet,Custom Hardware,Other'],
+            'type' => ['sometimes', new Enum(CertificationType::class)],
+            'action' => ['sometimes', new Enum(Action::class)],
+            'system_type' => ['sometimes', new Enum(SystemType::class)],
+            'system_base' => ['sometimes', new Enum(SystemBase::class)],
             'vendor_id' => ['sometimes', 'exists:vendors,id'],
         ]);
 
