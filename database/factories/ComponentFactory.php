@@ -24,7 +24,7 @@ class ComponentFactory extends Factory
     public function withAllFields(array $attributes = []): self
     {
         return $this->state(fn() => array_merge([
-            'name' => 'name',
+            'name' => 'Component Name Example',
             Component::type => ComponentType::BMD,
             'certification_id' => Certification::query()->inRandomOrder()->value('id') ?? Certification::factory(),
         ],

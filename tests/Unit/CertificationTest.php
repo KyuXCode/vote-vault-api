@@ -3,7 +3,6 @@
 namespace Tests\Unit;
 
 use App\Models\Certification;
-use App\Models\Vendor;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;
 use Tests\TestCase;
@@ -49,81 +48,45 @@ class CertificationTest extends TestCase
 
     public function testCertificationIsCreatedSuccessfully()
     {
-        $vendor = Vendor::factory()->create();
+        $Certification = Certification::factory()->withAllFields()->make();
 
-        $payload = [
-            'model_number' => $this->faker->regexify('[A-Z]{2}[0-9]{3}'),
-            'description' => $this->faker->sentence(),
-            'application_date' => $this->faker->date('Y-m-d'),
-            'certification_date' => $this->faker->date('Y-m-d'),
-            'expiration_date' => $this->faker->date('Y-m-d'),
-            'type' => $this->faker->randomElement(['Certification', 'Reevaluation', 'Renewal', 'Recertification', 'Other']),
-            'action' => $this->faker->randomElement(['Approved', 'Pending', 'Denied', 'Other']),
-            'system_type' => $this->faker->randomElement(['VS', 'EPB']),
-            'system_base' => $this->faker->randomElement(['DRE', 'OpScan', 'PC/Laptop', 'Tablet', 'Custom Hardware', 'Other']),
-            'vendor_id' => $vendor->id,
-        ];
-
-        $this->json('post', 'api/certifications', $payload)
+        $this->json('post', 'api/certifications', $Certification->toArray())
             ->assertStatus(Response::HTTP_CREATED)
-            ->assertJsonStructure(
-                [
-                    'id',
-                    'model_number',
-                    'description',
-                    'application_date',
-                    'certification_date',
-                    'expiration_date',
-                    'type',
-                    'action',
-                    'system_type',
-                    'system_base',
-                    'vendor_id',
-                    'created_at',
-                    'updated_at',
-                ]
-            );
+            ->assertCreated()
+            ->assertJson($Certification->toArray());
 
-        $this->assertDatabaseHas('certifications', $payload);
+        self::assertTrue(
+            $Certification::where('ABC_Test', $Certification->model_number)->exists()
+        );
+    }
+
+    public function testValidationErrorsArePresent()
+    {
+        $Certification = Certification::factory()->withAllFields()->make();
+        $Certification->description = null;
+
+
+        $this->json('post', 'api/certifications', $Certification->toArray())
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors([
+                'description',
+            ]);
+
+        self::assertTrue(Certification::where('ABC_Test', $Certification->model_number)->doesntExist());
     }
 
     public function testCertificationIsUpdatedSuccessfully()
     {
-        $certification = Certification::factory()->create();
+        $Certification = Certification::factory()->withAllFields()->create();
+        $Certification->model_number = 'ABC_Update';
 
-        $payload = [
-            'model_number' => $this->faker->regexify('[A-Z]{2}[0-9]{3}'),
-            'description' => $this->faker->sentence(),
-            'application_date' => $this->faker->date('Y-m-d'),
-            'certification_date' => $this->faker->date('Y-m-d'),
-            'expiration_date' => $this->faker->date('Y-m-d'),
-            'type' => $this->faker->randomElement(['Certification', 'Reevaluation', 'Renewal', 'Recertification', 'Other']),
-            'action' => $this->faker->randomElement(['Approved', 'Pending', 'Denied', 'Other']),
-            'system_type' => $this->faker->randomElement(['VS', 'EPB']),
-            'system_base' => $this->faker->randomElement(['DRE', 'OpScan', 'PC/Laptop', 'Tablet', 'Custom Hardware', 'Other']),
-        ];
-
-        $this->json('put', "api/certifications/{$certification->id}", $payload)
+        $this->json('put', "api/certifications/{$Certification->id}", $Certification->toArray())
             ->assertStatus(Response::HTTP_OK)
-            ->assertJsonStructure(
-                [
-                    'id',
-                    'model_number',
-                    'description',
-                    'application_date',
-                    'certification_date',
-                    'expiration_date',
-                    'type',
-                    'action',
-                    'system_type',
-                    'system_base',
-                    'vendor_id',
-                    'created_at',
-                    'updated_at',
-                ]
-            );
+            ->assertJson($Certification->toArray());
 
-        $this->assertDatabaseHas('certifications', $payload);
+        self::assertTrue(
+            $Certification::where('ABC_Update', $Certification->model_number)->exists()
+        );
     }
 
     public function testCertificationIsDestroyed()

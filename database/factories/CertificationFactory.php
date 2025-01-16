@@ -40,7 +40,7 @@ class CertificationFactory extends Factory
             'application_date' => $this->faker->dateTimeBetween('-2 years', 'now')->format('Y-m-d'),
             'certification_date' => $this->faker->dateTimeBetween('-1 year', 'now')->format('Y-m-d'),
             'expiration_date' => $this->faker->dateTimeBetween('now', '+2 years')->format('Y-m-d'),
-            'federal_certification_number' => '12345', // 70% chance to generate
+            'federal_certification_number' => '12345',
             'federal_certification_date' => $this->faker->boolean(70) ? $this->faker->dateTimeBetween('-1 year', 'now')->format('Y-m-d') : null,
             Certification::type => CertificationType::Certification,
             Certification::action => ActionType::Pending,

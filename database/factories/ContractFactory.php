@@ -26,8 +26,8 @@ class ContractFactory extends Factory
 
     public function withAllFields(array $attributes = []): self
     {
-        $beginDate = $this->faker->dateTimeBetween('-1 year', 'now');
-        $endDate = $this->faker->dateTimeBetween($beginDate, '+1 year');
+        $beginDate = '2025-01-16';
+        $endDate = '2026-01-16';
 
         return $this->state(fn() => array_merge([
             'begin_date' => $beginDate,

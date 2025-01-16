@@ -1,8 +1,7 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Unit;
 
-use App\Models\Certification;
 use App\Models\Contract;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;
@@ -32,59 +31,42 @@ class ContractTest extends TestCase
             );
     }
 
+    public function testValidationErrorsArePresent()
+    {
+        $Contract = Contract::factory()->withAllFields()->make();
+
+        $Contract->end_date = '2025-01-14';
+
+        $this->json('post', 'api/contracts', $Contract->toArray())
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors(['end_date']);
+
+        $this->assertDatabaseMissing('contracts', $Contract->toArray());
+    }
+
     public function testContractIsCreatedSuccessfully()
     {
-        $certification = Certification::factory()->create();
-        $payload = [
-            'begin_date' => $this->faker->dateTimeBetween('-1 year', 'now')->format('Y-m-d'),
-            'end_date' => $this->faker->dateTimeBetween('now', '+1 year')->format('Y-m-d'),
-            'type' => $this->faker->randomElement(['Purchase', 'Lease', 'Service', 'Other']),
-            'certification_id' => $certification->id,
-        ];
+        $Contract = Contract::factory()->withAllFields()->make();
 
-        $this->json('post', 'api/contracts', $payload)
-            ->assertStatus(Response::HTTP_CREATED)
-            ->assertJsonStructure(
-                [
-                    'id',
-                    'begin_date',
-                    'end_date',
-                    'type',
-                    'certification_id',
-                    'created_at',
-                    'updated_at',
-                ]
-            );
+        $this->json('post', 'api/contracts', $Contract->toArray())
+            ->assertCreated()
+            ->assertJson($Contract->toArray());
 
-        $this->assertDatabaseHas('contracts', $payload);
+        $this->assertDatabaseHas('contracts', $Contract->toArray());
     }
 
     public function testContractIsUpdatedSuccessfully()
     {
-        $contract = Contract::factory()->create();
+        $Contract = Contract::factory()->withAllFields()->create();
+        $Contract->begin_date = '2023-01-16';
 
-        $payload = [
-            'begin_date' => $this->faker->dateTimeBetween('-1 year', 'now')->format('Y-m-d'),
-            'end_date' => $this->faker->dateTimeBetween('now', '+1 year')->format('Y-m-d'),
-            'type' => $this->faker->randomElement(['Purchase', 'Lease', 'Service', 'Other']),
-            'certification_id' => $contract->certification_id,
-        ];
-
-        $this->json('put', "api/contracts/{$contract->id}", $payload)
+        $this->json('put', "api/contracts/{$Contract->id}", $Contract->toArray())
             ->assertStatus(Response::HTTP_OK)
-            ->assertJsonStructure(
-                [
-                    'id',
-                    'begin_date',
-                    'end_date',
-                    'type',
-                    'certification_id',
-                    'created_at',
-                    'updated_at',
-                ]
-            );
+            ->assertJson($Contract->toArray());
 
-        $this->assertDatabaseHas('contracts', array_merge($payload, ['id' => $contract->id]));
+        self::assertTrue(
+            $Contract::where('2023-01-16', $Contract->begin_date)->exists()
+        );
     }
 
     public function testContractIsDestroyed()
