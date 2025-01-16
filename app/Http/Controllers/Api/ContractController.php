@@ -42,7 +42,7 @@ class ContractController extends Controller
         $data = $request->validate([
             'begin_date' => ['sometimes', 'date'],
             'end_date' => ['sometimes', 'date', 'after:begin_date'],
-            'type' => ['sometimes', 'string', 'in:Purchase,Lease,Service,Other'],
+            'type' => ['sometimes', 'string', new Enum(ContractType::class)],
             'certification_id' => ['sometimes', 'integer', 'exists:certifications,id'],
         ]);
 

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Helpers\Action;
+use App\Helpers\ActionType;
 use App\Helpers\CertificationType;
 use App\Helpers\SystemBase;
 use App\Helpers\SystemType;
@@ -31,7 +31,7 @@ class CertificationController extends Controller
             'federal_certification_number' => ['nullable', 'string', 'max:255'],
             'federal_certification_date' => ['nullable', 'date'],
             'type' => ['required', new Enum(CertificationType::class)],
-            'action' => ['required', new Enum(Action::class)],
+            'action' => ['required', new Enum(ActionType::class)],
             'system_type' => ['required', new Enum(SystemType::class)],
             'system_base' => ['required', new Enum(SystemBase::class)],
             'vendor_id' => ['required', 'exists:vendors,id'],
@@ -58,7 +58,7 @@ class CertificationController extends Controller
             'federal_certification_number' => ['nullable', 'string', 'max:255'],
             'federal_certification_date' => ['nullable', 'date'],
             'type' => ['sometimes', new Enum(CertificationType::class)],
-            'action' => ['sometimes', new Enum(Action::class)],
+            'action' => ['sometimes', new Enum(ActionType::class)],
             'system_type' => ['sometimes', new Enum(SystemType::class)],
             'system_base' => ['sometimes', new Enum(SystemBase::class)],
             'vendor_id' => ['sometimes', 'exists:vendors,id'],

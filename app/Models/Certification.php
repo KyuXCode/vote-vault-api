@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Helpers\Action;
+use App\Helpers\ActionType;
 use App\Helpers\CertificationType;
 use App\Helpers\SystemBase;
 use App\Helpers\SystemType;
@@ -20,7 +20,7 @@ class Certification extends Model
 
     protected $casts = [
         self::type => CertificationType::class,
-        self::action => Action::class,
+        self::action => ActionType::class,
         self::system_base => SystemBase::class,
         self::system_type => SystemType::class,
     ];

@@ -2,7 +2,7 @@
 
 namespace App\Helpers;
 
-enum Action: string
+enum ActionType: string
 {
     case Approved = 'Approved';
     case Pending = 'Pending';
