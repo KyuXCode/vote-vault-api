@@ -1,9 +1,7 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Unit;
 
-use App\Models\Contract;
-use App\Models\County;
 use App\Models\Expense;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;
@@ -35,69 +33,45 @@ class ExpenseTest extends TestCase
             );
     }
 
+    public function testValidationErrorsArePresent()
+    {
+        $Expense = Expense::factory()->withAllFields()->make();
+        $Expense->amount = null;
+
+        $this->json('post', 'api/expenses', $Expense->toArray())
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors(['amount']);
+
+        self::assertTrue(
+            Expense::where('Example expense', $Expense->name)->doesntExist()
+        );
+    }
+
     public function testExpenseIsCreatedSuccessfully()
     {
-        $contract = Contract::factory()->create();
-        $county = County::factory()->create();
+        $Expense = Expense::factory()->withAllFields()->make();
 
-        $payload = [
-            'name' => $this->faker->words(3, true),
-            'amount' => $this->faker->randomFloat(2, 10, 10000),
-            'fund' => $this->faker->word(),
-            'owner' => $this->faker->name(),
-            'contract_id' => $contract->id,
-            'county_id' => $county->id,
-        ];
+        $this->json('post', 'api/expenses', $Expense->toArray())
+            ->assertCreated()
+            ->assertJson($Expense->toArray());
 
-        $this->json('post', 'api/expenses', $payload)
-            ->assertStatus(Response::HTTP_CREATED)
-            ->assertJsonStructure(
-                [
-                    'id',
-                    'name',
-                    'amount',
-                    'fund',
-                    'owner',
-                    'contract_id',
-                    'county_id',
-                    'created_at',
-                    'updated_at',
-                ]
-            );
-
-        $this->assertDatabaseHas('expenses', $payload);
+        self::assertTrue(
+            Expense::where('Example expense', $Expense->name)->exists()
+        );
     }
 
     public function testExpenseIsUpdatedSuccessfully()
     {
-        $expense = Expense::factory()->create();
+        $Expense = Expense::factory()->withAllFields()->create();
+        $Expense->name = 'Updated Expense';
 
-        $payload = [
-            'name' => $this->faker->words(3, true),
-            'amount' => $this->faker->randomFloat(2, 10, 10000),
-            'fund' => $this->faker->word(),
-            'owner' => $this->faker->name(),
-            'contract_id' => $expense->contract_id,
-            'county_id' => $expense->county_id,
-        ];
-
-        $this->json('put', "api/expenses/{$expense->id}", $payload)
+        $this->json('put', "api/expenses/{$Expense->id}", $Expense->toArray())
             ->assertStatus(Response::HTTP_OK)
-            ->assertJsonStructure(
-                [
-                    'id',
-                    'name',
-                    'amount',
-                    'fund',
-                    'owner',
-                    'contract_id',
-                    'county_id',
-                    'created_at',
-                    'updated_at',
-                ]
-            );
+            ->assertJson($Expense->toArray());
 
-        $this->assertDatabaseHas('expenses', array_merge($payload, ['id' => $expense->id]));
+        self::assertTrue(
+            Expense::where('Updated Expense', $Expense->name)->exists()
+        );
     }
 
     public function testExpenseIsDestroyed()

@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Helpers\ConditionType;
+use App\Helpers\UsageType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -10,6 +12,15 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class InventoryUnit extends Model
 {
     Use HasFactory;
+    protected $guarded = [];
+
+    protected $casts = [
+        self::condition => ConditionType::class,
+        self::usage => UsageType::class,
+    ];
+
+    public const condition = 'condition';
+    public const usage = 'usage';
 
     public function dispositions(): BelongsTo
     {
@@ -30,6 +41,4 @@ class InventoryUnit extends Model
     {
         return $this->belongsTo(County::class);
     }
-
-    protected $guarded = [];
 }
