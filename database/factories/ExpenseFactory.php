@@ -22,4 +22,19 @@ class ExpenseFactory extends Factory
             'county_id' => County::query()->inRandomOrder()->value('id') ?? County::factory(),
         ];
     }
+
+    public function withAllFields(array $attributes = []): self
+    {
+        return $this->state(fn() => array_merge([
+            'name' => 'Example expense',
+            'amount' => 1299.99,
+            'fund' => 'Government',
+            'owner' => 'John Doe',
+            'contract_id' => Contract::query()->inRandomOrder()->value('id') ?? Contract::factory(),
+            'county_id' => County::query()->inRandomOrder()->value('id') ?? County::factory(),
+        ],
+            $attributes)
+        );
+    }
+
 }

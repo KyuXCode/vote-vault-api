@@ -16,9 +16,20 @@ This project used php with Laravel 11 & PostgreSQL 16, see below instructions to
 ## Start the Project Locally
 ### Start ```vote-vault-api```
 Make sure you're in the ```vote-vault-api``` directory, start the docker container for the api
-```
-docker compose up --build
-```
+- Only run the command below on the first time you run the docker container or if you made any changes
+    ```
+    docker compose up --build
+    ```
+
+- Run the command below to stop the container
+    ```
+    docker compose down
+    ```
+  
+- Run this to restart (unless you made changes)
+    ```
+    docker compose up 
+    ```
 Go to your browser and enter this link: [http://127.0.0.1:8000/](http://127.0.0.1:8000/), you should see a default Laravel page ![Laravel Index Page](./InstructionScreenshots/laravel_landing_page.png)
 
 ## API End Points
@@ -33,6 +44,15 @@ Go to your browser and enter this link: [http://127.0.0.1:8000/](http://127.0.0.
 {base_URL}/api/storage_locations
 {base_URL}/api/dispositions
 ```
+## Testing
+We're using phpunit test for this project which is located under the tests folder
+- To run the existing tests open docker desktop and click on ```vote_vault_dev``` ![Open Docker Image](./InstructionScreenshots/select_docker_image.png)
+- Select the Exec tab to open terminal of the image ![Open Docker Terminal](./InstructionScreenshots/select_image_terminal.png)
+- Run the following command
+    ```
+    php artisan test --parallel
+    ```
+- You should see if they passed or not ![Test Result](./InstructionScreenshots/Test_result.png)
 
 ## Common Errors
 ### Error 1: Connection to server at "postgresql" failed: connection refused

@@ -37,10 +37,10 @@ Route::resource('dispositions', DispositionController::class);
 
 Route::resource('storage_locations', StorageLocationController::class);
 
-Route::get('/dashboard_data', [DashboardDataController::class, 'getDashboardData']);
+Route::get('/dashboard_data', [DashboardDataController::class, 'getDashboardData'])->name('dashboard_data');
 
-Route::get('/audits/public_test', [AuditController::class, 'publicTests']);
+Route::get('/audits/public_test', [AuditController::class, 'publicTests'])->name('audits.public_test');
 
-Route::get('/audits/random', [AuditController::class, 'randomAudits']);
+Route::get('/audits/random', [AuditController::class, 'randomAudits'])->name('audits.random');
 
 Route::get('/login', [UserController::class, 'login'])->name('login'); ;
