@@ -32,6 +32,8 @@ Route::resource('expenses', ExpenseController::class);
 
 Route::resource('inventory_units', InventoryUnitController::class);
 
+Route::post('/inventory-units/batch', [InventoryUnitController::class, 'batchStore']);
+
 Route::resource('dispositions', DispositionController::class);
 
 Route::resource('storage_locations', StorageLocationController::class);
