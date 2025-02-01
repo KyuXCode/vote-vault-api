@@ -15,7 +15,7 @@ use App\Http\Controllers\Api\VendorController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/user', function (Request $request) {
+Route::get('/users', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
@@ -43,4 +43,16 @@ Route::get('/audits/public_test', [AuditController::class, 'publicTests'])->name
 
 Route::get('/audits/random', [AuditController::class, 'randomAudits'])->name('audits.random');
 
-Route::get('/login', [UserController::class, 'login'])->name('login'); ;
+Route::post('/register', [UserController::class, 'registerForUser']);
+//
+//Route::middleware(['web'])->group(function () {
+//    Route::post('/login', [UserController::class, 'login']);
+//    Route::get('/generate-login-link/{user_id?}', [UserController::class, 'generateRandomLink']);
+//});
+
+
+
+Route::post('/register',[UserController::class,'registerForUser']);
+Route::post('/login',[UserController::class,'login']);
+Route::post('/logout',[UserController::class,'logout'])
+    ->middleware('auth:sanctum');

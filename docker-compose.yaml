@@ -15,6 +15,8 @@ services:
     container_name: vote_vault_dev
     build:
       dockerfile: Dockerfile
+    volumes:
+      - .:/var/www/html
     ports:
       - "8000:80"
     depends_on:
@@ -30,6 +32,7 @@ services:
       - APP_FALLBACK_LOCALE=en
       - APP_FAKER_LOCALE=en_US
       - APP_MAINTENANCE_DRIVER=file
+      - FRONTEND_URL=http://localhost:3000
       - PHP_CLI_SERVER_WORKERS=4
       - BCRYPT_ROUNDS=12
       - LOG_CHANNEL=stack
@@ -42,6 +45,8 @@ services:
       - DB_DATABASE=vote_vault_api
       - DB_USERNAME=postgres
       - DB_PASSWORD=development
+      - SESSION_DOMAIN=localhost
+      - SANCTUM_STATEFUL_DOMAINS=localhost:3000
       - SESSION_DRIVER=database
       - SESSION_LIFETIME=120
       - SESSION_ENCRYPT=false
