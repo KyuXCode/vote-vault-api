@@ -44,15 +44,16 @@ Route::get('/audits/public_test', [AuditController::class, 'publicTests'])->name
 Route::get('/audits/random', [AuditController::class, 'randomAudits'])->name('audits.random');
 
 Route::post('/register', [UserController::class, 'registerForUser']);
-//
-//Route::middleware(['web'])->group(function () {
-//    Route::post('/login', [UserController::class, 'login']);
-//    Route::get('/generate-login-link/{user_id?}', [UserController::class, 'generateRandomLink']);
-//});
+
+Route::post('/magic-login', [UserController::class, 'sendMagicLink']);
+Route::get('/magic-login/{token}', [UserController::class, 'magicLogin'])->name('magic-login')->middleware('signed');
 
 
+Route::post('/register', [UserController::class, 'registerForUser']);
+Route::post('/login', [UserController::class, 'login']);
 
-Route::post('/register',[UserController::class,'registerForUser']);
-Route::post('/login',[UserController::class,'login']);
-Route::post('/logout',[UserController::class,'logout'])
+Route::post('/logout', [UserController::class, 'logout'])
     ->middleware('auth:sanctum');
+
+Route::get('/', [UserController::class, 'magicLogin']);
+

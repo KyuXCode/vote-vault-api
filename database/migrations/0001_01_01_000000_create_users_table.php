@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('supervisor_name')->nullable();
             $table->string('supervisor_email')->nullable();
             $table->enum('organization', ['County', 'State', 'VSTOP']);
+            $table->enum('role', ['Admin', 'User']);
             $table->rememberToken();
             $table->timestamps();
         });
