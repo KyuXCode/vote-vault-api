@@ -46,7 +46,7 @@ services:
       - DB_USERNAME=postgres
       - DB_PASSWORD=development
       - SESSION_DOMAIN=localhost
-      - SANCTUM_STATEFUL_DOMAINS=localhost:3000
+      - SANCTUM_STATEFUL_DOMAINS=localhost
       - SESSION_DRIVER=database
       - SESSION_LIFETIME=120
       - SESSION_ENCRYPT=false

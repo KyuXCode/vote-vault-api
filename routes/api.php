@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\DashboardDataController;
 use App\Http\Controllers\Api\DispositionController;
 use App\Http\Controllers\Api\ExpenseController;
 use App\Http\Controllers\Api\InventoryUnitController;
+use App\Http\Controllers\Api\MagicLinkController;
 use App\Http\Controllers\Api\StorageLocationController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\VendorController;
@@ -45,8 +46,8 @@ Route::get('/audits/random', [AuditController::class, 'randomAudits'])->name('au
 
 Route::post('/register', [UserController::class, 'registerForUser']);
 
-Route::post('/magic-login', [UserController::class, 'sendMagicLink']);
-Route::get('/magic-login/{token}', [UserController::class, 'magicLogin'])->name('magic-login')->middleware('signed');
+Route::post('/magic-link', [MagicLinkController::class, 'sendMagicLink']);
+Route::post('/magic-login-verify', [MagicLinkController::class, 'magicLogin'])->name('magic-login-verify');
 
 
 Route::post('/register', [UserController::class, 'registerForUser']);
@@ -55,5 +56,4 @@ Route::post('/login', [UserController::class, 'login']);
 Route::post('/logout', [UserController::class, 'logout'])
     ->middleware('auth:sanctum');
 
-Route::get('/', [UserController::class, 'magicLogin']);
 
