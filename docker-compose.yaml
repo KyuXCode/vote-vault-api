@@ -47,6 +47,14 @@ services:
       - DB_PASSWORD=development
       - SESSION_DOMAIN=localhost
       - SANCTUM_STATEFUL_DOMAINS=localhost
+      - MAIL_DRIVER=smtp
+      - MAIL_MAILER=smtp
+      - MAIL_HOST=smtp.googlemail.com
+      - MAIL_PORT=465
+      - MAIL_USERNAME=kyu38547@gmail.com
+      - MAIL_PASSWORD=ndosztoawnaaodlh
+      - MAIL_FROM_ADDRESS=kyu38547@gmail.com
+      - MAIL_ENCRYPTION=ssl
       - SESSION_DRIVER=database
       - SESSION_LIFETIME=120
       - SESSION_ENCRYPT=false

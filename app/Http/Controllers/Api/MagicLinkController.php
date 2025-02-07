@@ -31,11 +31,10 @@ class MagicLinkController extends Controller
         $frontendMagicLink = "http://localhost:3000/magic-login?" . parse_url($signedUrl, PHP_URL_QUERY);
 
         // Send magic link email
-//        Mail::to($user->email)->send(new MagicLinkMail($frontendMagicLink));
+        Mail::to($user->email)->send(new MagicLinkMail($frontendMagicLink));
 
         return response()->json([
             'message' => 'Magic link sent successfully.',
-            'magic_link' => $frontendMagicLink,
         ]);
     }
     public function magicLogin(Request $request)
