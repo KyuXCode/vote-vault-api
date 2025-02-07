@@ -24,6 +24,8 @@ Route::resource('certifications', CertificationController::class);
 
 Route::resource('components', ComponentController::class);
 
+Route::post('/components/batch', [ComponentController::class, 'batchStore']);
+
 Route::resource('counties', CountyController::class);
 
 Route::resource('contracts', ContractController::class);
