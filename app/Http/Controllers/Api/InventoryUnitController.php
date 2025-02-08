@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\ConditionType;
+use App\Helpers\UsageType;
 use App\Http\Controllers\Controller;
 use App\Models\County;
 use App\Models\InventoryUnit;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rules\Enum;
 
 class InventoryUnitController extends Controller
 {
@@ -20,8 +23,8 @@ class InventoryUnitController extends Controller
         $data = $request->validate([
             'serial_number' => ['required', 'string', 'max:255'],
             'acquisition_date' => ['required', 'date'],
-            'condition' => ['required', 'in:New,Excellent,Good,Worn,Damaged,Unusable'],
-            'usage' => ['required', 'in:Active,Spare,Display,Other,Inactive'],
+            InventoryUnit::condition => ['required', new Enum(ConditionType::class)],
+            InventoryUnit::usage => ['required', new Enum(UsageType::class)],
             'expense_id' => ['required', 'integer', 'exists:expenses,id'],
             'component_id' => ['required', 'integer', 'exists:components,id']
         ]);
@@ -41,8 +44,8 @@ class InventoryUnitController extends Controller
         $data = $request->validate([
             'serial_number' => ['sometimes', 'string', 'max:255'],
             'acquisition_date' => ['sometimes', 'date'],
-            'condition' => ['sometimes', 'in:New,Excellent,Good,Worn,Damaged,Unusable'],
-            'usage' => ['sometimes', 'in:Active,Spare,Display,Other,Inactive'],
+            InventoryUnit::condition => ['sometimes', new Enum(ConditionType::class)],
+            InventoryUnit::usage => ['sometimes', new Enum(UsageType::class)],
             'expense_id' => ['sometimes', 'integer', 'exists:expenses,id'],
             'component_id' => ['sometimes', 'integer', 'exists:components,id']
         ]);
@@ -60,4 +63,25 @@ class InventoryUnitController extends Controller
 
         return response()->json(['message' => 'County deleted successfully']);
     }
+
+    public function batchStore(Request $request)
+    {
+        $data = $request->validate([
+            'inventory_units' => ['required', 'array'],
+            'inventory_units.*.serial_number' => ['required', 'string', 'max:255'],
+            'inventory_units.*.acquisition_date' => ['required', 'date'],
+            'inventory_units.*.condition' => ['required', new Enum(ConditionType::class)],
+            'inventory_units.*.usage' => ['required', new Enum(UsageType::class)],
+            'inventory_units.*.expense_id' => ['required', 'integer', 'exists:expenses,id'],
+            'inventory_units.*.component_id' => ['required', 'integer', 'exists:components,id']
+        ]);
+
+        $inventoryUnits = [];
+        foreach ($data['inventory_units'] as $unitData) {
+            $inventoryUnits[] = InventoryUnit::create($unitData);
+        }
+
+        return response()->json($inventoryUnits, 201);
+    }
 }
+

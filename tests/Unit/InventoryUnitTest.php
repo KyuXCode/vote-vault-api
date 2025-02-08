@@ -1,9 +1,7 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Unit;
 
-use App\Models\Component;
-use App\Models\Expense;
 use App\Models\InventoryUnit;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;
@@ -35,69 +33,45 @@ class InventoryUnitTest extends TestCase
             );
     }
 
+    public function testValidationErrorsArePresent()
+    {
+        $InventoryUnit = InventoryUnit::factory()->withAllfields()->make();
+        $InventoryUnit->acquisition_date = null;
+
+        $this->json('post', 'api/inventory_units', $InventoryUnit->toArray())
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors(['acquisition_date']);
+
+
+        self::assertTrue(InventoryUnit::where('A1B2C3D4E5', $InventoryUnit->serial_number)->doesntExist());
+    }
+
+
     public function testInventoryUnitIsCreatedSuccessfully()
     {
-        $expense = Expense::factory()->create();
-        $component = Component::factory()->create();
+        $InventoryUnit = InventoryUnit::factory()->withAllfields()->make();
 
-        $payload = [
-            'serial_number' => $this->faker->unique()->regexify('[A-Z0-9]{10}'),
-            'acquisition_date' => $this->faker->dateTimeBetween('-5 years', 'now')->format('Y-m-d'),
-            'condition' => $this->faker->randomElement(['New', 'Excellent', 'Good', 'Worn', 'Damaged', 'Unusable']),
-            'usage' => $this->faker->randomElement(['Active', 'Spare', 'Display', 'Other', 'Inactive']),
-            'expense_id' => $expense->id,
-            'component_id' => $component->id,
-        ];
+        $this->json('post', 'api/inventory_units', $InventoryUnit->toArray())
+            ->assertCreated()
+            ->assertJson($InventoryUnit->toArray());
 
-        $this->json('post', 'api/inventory_units', $payload)
-            ->assertStatus(Response::HTTP_CREATED)
-            ->assertJsonStructure(
-                [
-                    'id',
-                    'serial_number',
-                    'acquisition_date',
-                    'condition',
-                    'usage',
-                    'expense_id',
-                    'component_id',
-                    'created_at',
-                    'updated_at',
-                ]
-            );
-
-        $this->assertDatabaseHas('inventory_units', $payload);
+        self::assertTrue(
+            InventoryUnit::where('A1B2C3D4E5', $InventoryUnit->serial_number)->exists()
+        );
     }
 
     public function testInventoryUnitIsUpdatedSuccessfully()
     {
-        $inventoryUnit = InventoryUnit::factory()->create();
+        $InventoryUnit = InventoryUnit::factory()->withAllfields()->create();
+        $InventoryUnit->serial_number = 'A112B223';
 
-        $payload = [
-            'serial_number' => $this->faker->unique()->regexify('[A-Z0-9]{10}'),
-            'acquisition_date' => $this->faker->dateTimeBetween('-5 years', 'now')->format('Y-m-d'),
-            'condition' => $this->faker->randomElement(['New', 'Excellent', 'Good', 'Worn', 'Damaged', 'Unusable']),
-            'usage' => $this->faker->randomElement(['Active', 'Spare', 'Display', 'Other', 'Inactive']),
-            'expense_id' => $inventoryUnit->expense_id,
-            'component_id' => $inventoryUnit->component_id,
-        ];
-
-        $this->json('put', "api/inventory_units/{$inventoryUnit->id}", $payload)
+        $this->json('put', "api/inventory_units/{$InventoryUnit->id}", $InventoryUnit->toArray())
             ->assertStatus(Response::HTTP_OK)
-            ->assertJsonStructure(
-                [
-                    'id',
-                    'serial_number',
-                    'acquisition_date',
-                    'condition',
-                    'usage',
-                    'expense_id',
-                    'component_id',
-                    'created_at',
-                    'updated_at',
-                ]
-            );
+            ->assertJson($InventoryUnit->toArray());
 
-        $this->assertDatabaseHas('inventory_units', array_merge($payload, ['id' => $inventoryUnit->id]));
+        self::assertTrue(
+            $InventoryUnit::where('A112B223', $InventoryUnit->serial_number)->exists()
+        );
     }
 
     public function testInventoryUnitIsDestroyed()

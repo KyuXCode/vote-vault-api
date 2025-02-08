@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Unit;
 
 use App\Models\Component;
 use App\Models\Certification;
@@ -32,59 +32,42 @@ class ComponentTest extends TestCase
             );
     }
 
+    public function testValidationErrorsArePresent()
+    {
+        $Certification = Certification::factory()->withAllFields()->make();
+
+        $this->json('post', 'api/components', $Certification->toArray())
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors(['name', 'type', 'certification_id']);
+
+        self::assertTrue(Component::where('Component Name Example', $Certification->name)->doesntExist());
+    }
+
     public function testComponentIsCreatedSuccessfully()
     {
-        $certification = Certification::factory()->create();
+        $Component = Component::factory()->withAllFields()->make();
 
-        $payload = [
-            'name' => $this->faker->word(),
-            'description' => $this->faker->sentence(),
-            'type' => $this->faker->randomElement(['DRE', 'OpScan', 'BMD', 'VVPAT', 'COTS', 'Other', 'Hardware', 'Software', 'Peripheral']),
-            'certification_id' => $certification->id,
-        ];
+        $this->json('post', 'api/components', $Component->toArray())
+            ->assertCreated()
+            ->assertJson($Component->toArray());
 
-        $this->json('post', 'api/components', $payload)
-            ->assertStatus(Response::HTTP_CREATED)
-            ->assertJsonStructure(
-                [
-                    'id',
-                    'name',
-                    'description',
-                    'type',
-                    'certification_id',
-                    'created_at',
-                    'updated_at',
-                ]
-            );
-
-        $this->assertDatabaseHas('components', $payload);
+        self::assertTrue(
+            Component::where('Component Name Example', $Component->name)->exists()
+        );
     }
 
     public function testComponentIsUpdatedSuccessfully()
     {
-        $component = Component::factory()->create();
+        $Component = Component::factory()->withAllFields()->create();
+        $Component->name = 'Update Name';
 
-        $payload = [
-            'name' => $this->faker->word(),
-            'description' => $this->faker->sentence(),
-            'type' => $this->faker->randomElement(['DRE', 'OpScan', 'BMD', 'VVPAT', 'COTS', 'Other', 'Hardware', 'Software', 'Peripheral']),
-        ];
-
-        $this->json('put', "api/components/{$component->id}", $payload)
+        $this->json('put', "api/components/{$Component->id}", $Component->toArray())
             ->assertStatus(Response::HTTP_OK)
-            ->assertJsonStructure(
-                [
-                    'id',
-                    'name',
-                    'description',
-                    'type',
-                    'certification_id',
-                    'created_at',
-                    'updated_at',
-                ]
-            );
+            ->assertJson($Component->toArray());
 
-        $this->assertDatabaseHas('components', array_merge($payload, ['id' => $component->id]));
+        self::assertTrue(
+            $Component::where('Update Name', $Component->name)->exists()
+        );
     }
 
     public function testComponentIsDestroyed()
