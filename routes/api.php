@@ -26,6 +26,8 @@ Route::resource('certifications', CertificationController::class);
 
 Route::resource('components', ComponentController::class);
 
+Route::post('/components/batch', [ComponentController::class, 'batchStore']);
+
 Route::resource('counties', CountyController::class);
 
 Route::resource('contracts', ContractController::class);
@@ -33,6 +35,8 @@ Route::resource('contracts', ContractController::class);
 Route::resource('expenses', ExpenseController::class);
 
 Route::resource('inventory_units', InventoryUnitController::class);
+
+Route::post('/inventory-units/batch', [InventoryUnitController::class, 'batchStore']);
 
 Route::resource('dispositions', DispositionController::class);
 

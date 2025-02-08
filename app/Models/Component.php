@@ -11,6 +11,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Component extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'name',
+        'description',
+        'type',
+        'certification_id'
+    ];
     protected $guarded = [];
     protected $casts = [
         self::type => ComponentType::class

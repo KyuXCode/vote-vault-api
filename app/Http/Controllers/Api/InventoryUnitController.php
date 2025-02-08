@@ -63,4 +63,25 @@ class InventoryUnitController extends Controller
 
         return response()->json(['message' => 'County deleted successfully']);
     }
+
+    public function batchStore(Request $request)
+    {
+        $data = $request->validate([
+            'inventory_units' => ['required', 'array'],
+            'inventory_units.*.serial_number' => ['required', 'string', 'max:255'],
+            'inventory_units.*.acquisition_date' => ['required', 'date'],
+            'inventory_units.*.condition' => ['required', new Enum(ConditionType::class)],
+            'inventory_units.*.usage' => ['required', new Enum(UsageType::class)],
+            'inventory_units.*.expense_id' => ['required', 'integer', 'exists:expenses,id'],
+            'inventory_units.*.component_id' => ['required', 'integer', 'exists:components,id']
+        ]);
+
+        $inventoryUnits = [];
+        foreach ($data['inventory_units'] as $unitData) {
+            $inventoryUnits[] = InventoryUnit::create($unitData);
+        }
+
+        return response()->json($inventoryUnits, 201);
+    }
 }
+

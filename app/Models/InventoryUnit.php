@@ -11,6 +11,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class InventoryUnit extends Model
 {
+    protected $fillable = [
+        'serial_number',
+        'acquisition_date',
+        'condition',
+        'usage',
+        'expense_id',
+        'component_id'
+    ];
     Use HasFactory;
     protected $guarded = [];
 

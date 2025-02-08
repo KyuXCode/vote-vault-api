@@ -32,6 +32,24 @@ class ComponentController extends Controller
             );
     }
 
+    public function batchStore(Request $request)
+    {
+        $data = $request->validate([
+            'components' => ['required', 'array'],
+            'components.*.name' => ['required', 'string', 'max:255'],
+            'components.*.description' => ['required', 'string', 'max:255'],
+            'components.*.type' => ['required', new Enum(ComponentType::class)],
+            'components.*.certification_id' => ['required', 'integer', 'exists:certifications,id'],
+        ]);
+
+        $components = [];
+        foreach ($data['components'] as $componentData) {
+            $components[] = Component::create($componentData);
+        }
+
+        return response()->json($components, 201);
+    }
+
     public function show(string $id)
     {
         $component = Component::findOrFail($id);
